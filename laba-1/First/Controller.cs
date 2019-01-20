@@ -19,12 +19,14 @@ namespace First
 
         public void Start()
         {
-            var dtos = GetDtos();
             var publicKey = GetPublicKey();
+            var dtos = GetDtos();
 
             var data = Encrypt(dtos, publicKey);
 
+            Thread.Sleep(2000);
             Send(data);
+            Console.ReadLine();
 
             //getdata
 
@@ -42,14 +44,14 @@ namespace First
                 {
                     City = "Пермь",
                     CityType = "город",
-                    Country = "Россия",
-                    EventComment = "кауккупуеип",
-                    EventInfo = "рикпркил",
-                    EventName = "Полет",
-                    Execution = new DateTime(2017, 2, 22),
-                    House = "37",
-                    Region = "Пермский край",
-                    Street = "Студенческая"
+                    //Country = "Россия",
+                    //EventComment = "кауккупуеип",
+                    //EventInfo = "рикпркил",
+                    //EventName = "Полет",
+                    //Execution = new DateTime(2017, 2, 22),
+                    //House = "37",
+                    //Region = "Пермский край",
+                    //Street = "Студенческая"
                 }
             };
 
@@ -60,7 +62,11 @@ namespace First
 
         byte[] Encrypt(List<EventDto> dtos, RSAParameters publicKey)
         {
-            byte[] data = RSAHelper.RSAEncrypt(ObjectToByteArray(dtos), publicKey, false);
+            UnicodeEncoding byteConverter = new UnicodeEncoding();
+
+
+            byte[] data = RSAHelper.RSAEncrypt(byteConverter.GetBytes("237"), publicKey, false);
+            Console.WriteLine(data.Length);
             Console.WriteLine("dtos are encrypted");
 
             return data;
@@ -69,18 +75,9 @@ namespace First
         RSAParameters GetPublicKey()
         {
             Console.WriteLine("Get publicKey");
-            var value = new RSAParameters();
-            Thread thread = new Thread(() =>
-            {
-                value = manager.Listen<RSAParameters>(inputPort);
-            });
-            thread.Start();
-            Console.WriteLine("Send request for publicKey");
-            manager.Send(outputPort, new byte[1]);
-            Console.WriteLine("Send request for publicKey");
-            thread.Join();
-
+            var value = manager.Listen<RSAParameters>(inputPort);
             Console.WriteLine("PublicKey is received");
+
             return value;
         }
         

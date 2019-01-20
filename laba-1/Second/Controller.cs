@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
+using System.Text;
 using Domain;
 using SocketHelper;
 
@@ -36,7 +37,7 @@ namespace Second
 
         void WaitRequest()
         {
-            manager.Listen(inputPort);
+            //manager.Listen(inputPort);
         }
 
         void CreateRsa()
@@ -53,13 +54,19 @@ namespace Second
 
         List<EventDto> WaitData()
         {
+            Console.WriteLine("Listen encrypted data");
             var encData = manager.Listen(inputPort);
             Console.WriteLine("encrypted data is received");
             var data = Decrypt(encData);
-            Console.WriteLine("data are decrypted");
-            var dtos = FromByteArray<List<EventDto>>(data);
-            Console.WriteLine("dtos is ready to parse");
-            return dtos;
+
+            UnicodeEncoding byteConverter = new UnicodeEncoding();
+            Console.WriteLine(byteConverter.GetString(data));
+
+            //Console.WriteLine("data are decrypted");
+            //var dtos = FromByteArray<List<EventDto>>(data);
+            //Console.WriteLine("dtos is ready to parse");
+            //return dtos;
+            return new List<EventDto>();
         }
 
         byte[] Decrypt(byte[] encData)

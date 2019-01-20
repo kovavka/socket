@@ -89,7 +89,6 @@ namespace SocketHelper
             {
                 Console.WriteLine(ex.Message);
             }
-            Console.Read();
         }
 
         public void SendAndListen(int port, byte[] dataToSend)
