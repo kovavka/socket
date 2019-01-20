@@ -1,0 +1,17 @@
+*.suo
+*.user
+
+[Dd]ebug/
+[Rr]elease/
+build/
+[Bb]in/
+[Oo]bj/
+
+packages/*
+node_modules/
+*/.vs
+*/client/**/*.json
+*/client/**/*.js
+*/client/**/*.json
+!*/client/**/dist/**/*.js
+*/client/**/*.js.map
