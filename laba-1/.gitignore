@@ -9,7 +9,7 @@ build/
 
 packages/*
 node_modules/
-*/.vs
+.vs/
 */client/**/*.json
 */client/**/*.js
 */client/**/*.json
