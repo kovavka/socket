@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -32,20 +33,23 @@ namespace SocketHelper
                 int bytes = 0;
                 byte[] data = new byte[256];
 
+                var list = new List<byte>();
+
                 do
                 {
                     bytes = handler.Receive(data);
+                    list.AddRange(data);
                     builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
                 }
                 while (handler.Available > 0);
 
-                data = Encoding.Unicode.GetBytes("SocketManager: Data delivered");
-                handler.Send(data);
+                var answer = Encoding.Unicode.GetBytes("SocketManager: Data delivered");
+                handler.Send(answer);
                 Console.WriteLine("SocketManager: Data delivered");
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
 
-                return Encoding.Unicode.GetBytes(builder.ToString());
+                return list.ToArray();
             }
             catch (Exception ex)
             {

@@ -17,6 +17,7 @@ namespace Second
         private RSAParameters privateKey;
         private RSAParameters publicKey;
 
+        private string fileName = "file.txt";
 
 
         public void Start()
@@ -30,6 +31,7 @@ namespace Second
 
             WaitRequest();
             CreateRsa();
+
             var dtos = WaitData();
             Console.WriteLine(dtos[0].City);
             SaveData();
@@ -45,7 +47,6 @@ namespace Second
             var rsaProvider = new RSACryptoServiceProvider();
             privateKey = rsaProvider.ExportParameters(true);
             publicKey = rsaProvider.ExportParameters(false);
-            Console.WriteLine(publicKey);
 
             Console.WriteLine("Sending publicKey");
             manager.Send<RSAParameters>(outputPort, publicKey);
@@ -57,6 +58,7 @@ namespace Second
             Console.WriteLine("Listen encrypted data");
             var encData = manager.Listen(inputPort);
             Console.WriteLine("encrypted data is received");
+
             var data = Decrypt(encData);
 
             UnicodeEncoding byteConverter = new UnicodeEncoding();
@@ -71,7 +73,7 @@ namespace Second
 
         byte[] Decrypt(byte[] encData)
         {
-            byte[] data = RSAHelper.RSADecrypt(encData, privateKey, false);
+            byte[] data = RSAHelper.Decrypt(encData, privateKey);
             return data;
         }
 

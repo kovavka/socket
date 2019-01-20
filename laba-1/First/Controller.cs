@@ -15,6 +15,8 @@ namespace First
         static int inputPort = 8006;
         static int outputPort = 8005;
 
+        private string fileName = "file.txt";
+
         private SocketManager manager = new SocketManager();
 
         public void Start()
@@ -23,9 +25,10 @@ namespace First
             var dtos = GetDtos();
 
             var data = Encrypt(dtos, publicKey);
-
+            
             Thread.Sleep(2000);
             Send(data);
+
             Console.ReadLine();
 
             //getdata
@@ -65,7 +68,7 @@ namespace First
             UnicodeEncoding byteConverter = new UnicodeEncoding();
 
 
-            byte[] data = RSAHelper.RSAEncrypt(byteConverter.GetBytes("237"), publicKey, false);
+            byte[] data = RSAHelper.Encrypt(byteConverter.GetBytes("237"), publicKey);
             Console.WriteLine(data.Length);
             Console.WriteLine("dtos are encrypted");
 

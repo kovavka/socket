@@ -9,34 +9,20 @@ namespace SocketHelper
 {
     public class RSAHelper
     {
-        static public byte[] RSAEncrypt(byte[] DataToEncrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
+        static public byte[] Encrypt(byte[] data, RSAParameters publicKey)
         {
-            //Create a new instance of RSACryptoServiceProvider.
-            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+            var provider = new RSACryptoServiceProvider();
 
-            //Import the RSA Key information. This only needs
-            //toinclude the public key information.
-            RSA.ImportParameters(RSAKeyInfo);
-
-            //Encrypt the passed byte array and specify OAEP padding.  
-            //OAEP padding is only available on Microsoft Windows XP or
-            //later.  
-            return RSA.Encrypt(DataToEncrypt, DoOAEPPadding);
+            provider.ImportParameters(publicKey);
+            return provider.Encrypt(data, false);
         }
 
-        static public byte[] RSADecrypt(byte[] DataToDecrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
+        static public byte[] Decrypt(byte[] data, RSAParameters privateKey)
         {
-            //Create a new instance of RSACryptoServiceProvider.
-            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+            var provider = new RSACryptoServiceProvider();
 
-            //Import the RSA Key information. This needs
-            //to include the private key information.
-            RSA.ImportParameters(RSAKeyInfo);
-
-            //Decrypt the passed byte array and specify OAEP padding.  
-            //OAEP padding is only available on Microsoft Windows XP or
-            //later.  
-            return RSA.Decrypt(DataToDecrypt, DoOAEPPadding);
+            provider.ImportParameters(privateKey);
+            return provider.Decrypt(data, false);
         }
     }
 }
