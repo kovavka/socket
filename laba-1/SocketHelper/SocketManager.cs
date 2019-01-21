@@ -95,11 +95,6 @@ namespace SocketHelper
             }
         }
 
-        public void SendAndListen(int port, byte[] dataToSend)
-        {
-
-        }
-
         byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)

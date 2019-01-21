@@ -14,15 +14,25 @@ namespace First
     {
         static int inputPort = 8006;
         static int outputPort = 8005;
-
-        private string fileName = "file.txt";
-
         private SocketManager manager = new SocketManager();
+        private byte[] key;
+        private byte[] vector;
 
         public void Start()
         {
+            var des = DES.Create();
+            key = des.Key;
+            vector = des.IV;
+
+
             var publicKey = GetPublicKey();
             var dtos = GetDtos();
+
+            var bytes = ObjectToByteArray(dtos);
+            var enc = DESHelper.Encrypt(bytes, key, vector);
+            var result = DESHelper.Decrypt(enc, key, vector);
+            var rrr = FromByteArray<List<EventDto>>(result);
+
 
             var data = Encrypt(dtos, publicKey);
             
@@ -39,6 +49,17 @@ namespace First
             //отправить данные
         }
 
+        T FromByteArray<T>(byte[] data)
+        {
+            if (data == null)
+                return default(T);
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream(data))
+            {
+                object obj = bf.Deserialize(ms);
+                return (T)obj;
+            }
+        }
         List<EventDto> GetDtos()
         {
             var dtos = new List<EventDto>()
@@ -47,14 +68,14 @@ namespace First
                 {
                     City = "Пермь",
                     CityType = "город",
-                    //Country = "Россия",
-                    //EventComment = "кауккупуеип",
-                    //EventInfo = "рикпркил",
-                    //EventName = "Полет",
-                    //Execution = new DateTime(2017, 2, 22),
-                    //House = "37",
-                    //Region = "Пермский край",
-                    //Street = "Студенческая"
+                    Country = "Россия",
+                    EventComment = "кауккупуеип",
+                    EventInfo = "рикпркил",
+                    EventName = "Полет",
+                    Execution = new DateTime(2017, 2, 22),
+                    House = "37",
+                    Region = "Пермский край",
+                    Street = "Студенческая"
                 }
             };
 

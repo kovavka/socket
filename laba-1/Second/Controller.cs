@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,12 +18,10 @@ namespace Second
         private RSAParameters privateKey;
         private RSAParameters publicKey;
 
-        private string fileName = "file.txt";
 
 
         public void Start()
         {
-
             //получить запрос на создание ключа
             //создать RSA, отправить ключ
             //получить данные
@@ -33,7 +32,7 @@ namespace Second
             CreateRsa();
 
             var dtos = WaitData();
-            Console.WriteLine(dtos[0].City);
+            //Console.WriteLine(dtos[0].City);
             SaveData();
         }
 
@@ -73,6 +72,8 @@ namespace Second
 
         byte[] Decrypt(byte[] encData)
         {
+            var temp = encData.ToList().Take(128);
+            encData = temp.ToArray();
             byte[] data = RSAHelper.Decrypt(encData, privateKey);
             return data;
         }
