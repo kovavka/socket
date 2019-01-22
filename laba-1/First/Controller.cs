@@ -24,42 +24,25 @@ namespace First
             key = des.Key;
             vector = des.IV;
 
-
             var publicKey = GetPublicKey();
             var dtos = GetDtos();
-
-            var bytes = ObjectToByteArray(dtos);
-            var enc = DESHelper.Encrypt(bytes, key, vector);
-            var result = DESHelper.Decrypt(enc, key, vector);
-            var rrr = FromByteArray<List<EventDto>>(result);
-
-
-            var data = Encrypt(dtos, publicKey);
             
-            Thread.Sleep(2000);
-            Send(data);
-
-            Console.ReadLine();
-
-            //getdata
-
-            //шифрование
-            //получить ключ
-            //зашифровать ключ DES
-            //отправить данные
-        }
-
-        T FromByteArray<T>(byte[] data)
-        {
-            if (data == null)
-                return default(T);
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream(data))
+            var enc = Encrypt(dtos);
+            var encryptedKey = RSAHelper.Encrypt(key, publicKey);
+            var data = new EncryptData()
             {
-                object obj = bf.Deserialize(ms);
-                return (T)obj;
-            }
+                Data = enc,
+                Key = encryptedKey,
+                Vector = vector
+            };
+
+            
+
+            Send(data);
+            
+            Console.ReadLine();
         }
+
         List<EventDto> GetDtos()
         {
             var dtos = new List<EventDto>()
@@ -84,16 +67,13 @@ namespace First
             return dtos;
         }
 
-        byte[] Encrypt(List<EventDto> dtos, RSAParameters publicKey)
+        byte[] Encrypt(List<EventDto> dtos)
         {
-            UnicodeEncoding byteConverter = new UnicodeEncoding();
-
-
-            byte[] data = RSAHelper.Encrypt(byteConverter.GetBytes("237"), publicKey);
-            Console.WriteLine(data.Length);
+            var bytes = ObjectToByteArray(dtos);
+            var enc = DESHelper.Encrypt(bytes, key, vector);
             Console.WriteLine("dtos are encrypted");
 
-            return data;
+            return enc;
         }
 
         RSAParameters GetPublicKey()
@@ -105,11 +85,12 @@ namespace First
             return value;
         }
         
-        void Send(byte[] data)
+        void Send(EncryptData data)
         {
-            Console.WriteLine("Sending encrypted dtos");
+            Console.WriteLine("Sending encrypted data");
             manager.Send(outputPort, data);
         }
+        
         byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)

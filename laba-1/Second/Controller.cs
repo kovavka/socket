@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
-using System.Text;
 using Domain;
 using SocketHelper;
 
@@ -17,28 +16,14 @@ namespace Second
         private static SocketManager manager = new SocketManager();
         private RSAParameters privateKey;
         private RSAParameters publicKey;
-
-
-
+        
         public void Start()
         {
-            //получить запрос на создание ключа
-            //создать RSA, отправить ключ
-            //получить данные
-            //записать
-
-
-            WaitRequest();
             CreateRsa();
 
             var dtos = WaitData();
-            //Console.WriteLine(dtos[0].City);
+            Console.WriteLine(dtos[0].City);
             SaveData();
-        }
-
-        void WaitRequest()
-        {
-            //manager.Listen(inputPort);
         }
 
         void CreateRsa()
@@ -55,22 +40,22 @@ namespace Second
         List<EventDto> WaitData()
         {
             Console.WriteLine("Listen encrypted data");
-            var encData = manager.Listen(inputPort);
+            var data = manager.Listen<EncryptData>(inputPort);
             Console.WriteLine("encrypted data is received");
 
-            var data = Decrypt(encData);
+            var encData = data.Data;
+            var encKey = data.Key;
+            var vector = data.Vector;
 
-            UnicodeEncoding byteConverter = new UnicodeEncoding();
-            Console.WriteLine(byteConverter.GetString(data));
+            var key = RsaDecrypt(encKey);
+            var bytes = DESHelper.Decrypt(encData, key, vector);
+            var dtos = FromByteArray<List<EventDto>>(bytes);
 
-            //Console.WriteLine("data are decrypted");
-            //var dtos = FromByteArray<List<EventDto>>(data);
-            //Console.WriteLine("dtos is ready to parse");
-            //return dtos;
-            return new List<EventDto>();
+            Console.WriteLine("data are decrypted");
+            return dtos;
         }
 
-        byte[] Decrypt(byte[] encData)
+        byte[] RsaDecrypt(byte[] encData)
         {
             var temp = encData.ToList().Take(128);
             encData = temp.ToArray();
@@ -82,6 +67,7 @@ namespace Second
         {
 
         }
+
         T FromByteArray<T>(byte[] data)
         {
             if (data == null)

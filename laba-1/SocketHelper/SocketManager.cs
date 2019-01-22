@@ -89,6 +89,11 @@ namespace SocketHelper
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             }
+            catch (SocketException ex)
+            {
+                //try again
+                Send(port, data);
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
