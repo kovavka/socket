@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
 using Domain;
 using SocketHelper;
 
@@ -14,7 +12,8 @@ namespace First
     {
         static int inputPort = 8006;
         static int outputPort = 8005;
-        private SocketManager manager = new SocketManager();
+        private SocketManager socketManager = new SocketManager();
+        private MessageQueueManager queueManager = new MessageQueueManager();
         private byte[] key;
         private byte[] vector;
 
@@ -35,8 +34,6 @@ namespace First
                 Key = encryptedKey,
                 Vector = vector
             };
-
-            
 
             Send(data);
             
@@ -79,7 +76,8 @@ namespace First
         RSAParameters GetPublicKey()
         {
             Console.WriteLine("Get publicKey");
-            var value = manager.Listen<RSAParameters>(inputPort);
+            var value = queueManager.Receive<RSAParameters>("publicKey");
+            //var value = socketManager.Listen<RSAParameters>(inputPort);
             Console.WriteLine("PublicKey is received");
 
             return value;
@@ -88,7 +86,8 @@ namespace First
         void Send(EncryptData data)
         {
             Console.WriteLine("Sending encrypted data");
-            manager.Send(outputPort, data);
+            queueManager.Send(data, "EncryptData");
+            //socketManager.Send(outputPort, data);
         }
         
         byte[] ObjectToByteArray(object obj)

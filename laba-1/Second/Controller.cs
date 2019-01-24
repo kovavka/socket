@@ -13,12 +13,16 @@ namespace Second
     {
         static int inputPort = 8005;
         static int outputPort = 8006;
-        private static SocketManager manager = new SocketManager();
+        private SocketManager socketManager = new SocketManager();
+        private MessageQueueManager queueManager = new MessageQueueManager();
         private RSAParameters privateKey;
         private RSAParameters publicKey;
         
         public void Start()
         {
+
+
+
             CreateRsa();
 
             var dtos = WaitData();
@@ -33,14 +37,16 @@ namespace Second
             publicKey = rsaProvider.ExportParameters(false);
 
             Console.WriteLine("Sending publicKey");
-            manager.Send<RSAParameters>(outputPort, publicKey);
+            queueManager.Send(publicKey, "publicKey");
+            //socketManager.Send<RSAParameters>(outputPort, publicKey);
         }
 
 
         List<EventDto> WaitData()
         {
             Console.WriteLine("Listen encrypted data");
-            var data = manager.Listen<EncryptData>(inputPort);
+            var data = queueManager.Receive<EncryptData>("EncryptData");
+            //var data = socketManager.Listen<EncryptData>(inputPort);
             Console.WriteLine("encrypted data is received");
 
             var encData = data.Data;
