@@ -28,6 +28,32 @@ namespace Infrastructure.Repositories
         }
     }
 
+    public class RegionRepository : NHRepository<Region>
+    {
+        private ISession session = NHibernateHelper.OpenSession();
+        public Region Get(string country, string region)
+        {
+            return session.Query<Region>().Where(x => x.Country.Name == country && x.Name == region).FirstOrDefault();
+        }
+    }
+    public class CityRepository : NHRepository<City>
+    {
+        private ISession session = NHibernateHelper.OpenSession();
+        public City Get(long regionId, string citytype, string name)
+        {
+            return session.Query<City>().Where(x => x.Region.Id == regionId && x.CityType.Name == citytype && x.Name == name).FirstOrDefault();
+        }
+    }
+
+    public class StreetRepository : NHRepository<Street>
+    {
+        private ISession session = NHibernateHelper.OpenSession();
+        public Street Get(long id, string name)
+        {
+            return session.Query<Street>().Where(x => x.City.Id == id && x.Name == name).FirstOrDefault();
+        }
+    }
+
 
     public class NamedRepository<T> : NHRepository<T> where T : NamedEntity
     {

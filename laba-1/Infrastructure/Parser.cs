@@ -19,7 +19,8 @@ namespace Infrastructure
     {
         public void Start(List<EventDto> dtos)
         {
-            DataBaseHelper.CreateDB();
+            //DataBaseHelper.CreateDB();
+            DataBaseHelper.ClearDB();
             NHibernateHelper.Configure();
             SaveEvents(dtos);
             ToExcel();
@@ -240,9 +241,9 @@ namespace Infrastructure
             foreach (var dto in dtos)
             {
                 Region region;
-                using (var repository = new NamedRepository<Region>())
+                using (var repository = new RegionRepository())
                 {
-                    region = repository.Get(dto.Region);
+                    region = repository.Get(dto.Country, dto.Region);
                     if (region == null)
                         region = repository.Add(new Region()
                         {
@@ -252,26 +253,26 @@ namespace Infrastructure
                 }
                 
                 City city;
-                using (var repository = new NamedRepository<City>())
+                using (var repository = new CityRepository())
                 {
-                    city = repository.Get(dto.City);
+                    city = repository.Get(region.Id, dto.CityType, dto.City);
                     if (city == null)
                         city = repository.Add(new City()
                         {
-                            Name = dto.Region,
+                            Name = dto.City,
                             CityType = GetFromRepo<CityType>(dto.CityType),
                             Region = GetFromRepo<Region>(region.Id)
                         });
                 }
 
                 Street street;
-                using (var repository = new NamedRepository<Street>())
+                using (var repository = new StreetRepository())
                 {
-                    street = repository.Get(dto.Street);
+                    street = repository.Get(city.Id, dto.Street);
                     if (street == null)
                         street = repository.Add(new Street()
                         {
-                            Name = dto.Region,
+                            Name = dto.Street,
                             City = GetFromRepo<City>(city.Id),
                         });
                 }
@@ -317,8 +318,6 @@ namespace Infrastructure
                 return repository.Get(id);
             }
         }
-
-
 
     }
 }

@@ -39,7 +39,7 @@ namespace Infrastructure
                 return sessionFactory;
             }
         }
-        
+
         public static void CreateDB()
         {
             var factory = reBiuldConfiguration.BuildSessionFactory();
@@ -68,12 +68,12 @@ namespace Infrastructure
                 script.Value.RunScript(sessionFactory);
             }
         }
-        
+
         private static SortedDictionary<int, ScriptItem> GetScripts()
         {
             var dir = @".\Sql";
             var result = new SortedDictionary<int, ScriptItem>();
-            
+
 
             var files = Directory.GetFiles(dir, "*.sql");
 
@@ -91,6 +91,33 @@ namespace Infrastructure
             }
 
             return result;
+        }
+
+        public static void ClearDB()
+        {
+            var factory = defaultConfiguration.BuildSessionFactory();
+
+            Run(@"delete 
+FROM [EventsDb].[dbo].[Event]; 
+
+delete 
+FROM [EventsDb].[dbo].[Address]; 
+
+delete 
+FROM [EventsDb].[dbo].Street; 
+
+delete 
+FROM [EventsDb].[dbo].City; 
+
+delete 
+FROM [EventsDb].[dbo].CityType; 
+
+delete 
+FROM [EventsDb].[dbo].Region; 
+
+delete 
+FROM [EventsDb].[dbo].Country;", factory);
+            factory.Close();
         }
 
         public static IEnumerable<EventDto> GetDtos()

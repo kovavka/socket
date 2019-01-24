@@ -56,7 +56,7 @@
       <Name>Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
-      <Project>{48B7C0D9-9B88-4527-9986-98916B507C4A}</Project>
+      <Project>{48b7c0d9-9b88-4527-9986-98916b507c4a}</Project>
       <Name>Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\SocketHelper\SocketHelper.csproj">
