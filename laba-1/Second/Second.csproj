@@ -55,6 +55,10 @@
       <Project>{C72149FD-CA39-418C-8B7D-F1F43E1182E9}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
+      <Project>{48b7c0d9-9b88-4527-9986-98916b507c4a}</Project>
+      <Name>Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SocketHelper\SocketHelper.csproj">
       <Project>{54412502-574E-4EBC-9F8F-82B9C53E55FB}</Project>
       <Name>SocketHelper</Name>

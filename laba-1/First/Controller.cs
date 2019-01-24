@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using Domain;
+using Infrastructure;
 using SocketHelper;
+using EventDto = Domain.EventDto;
 
 namespace First
 {
@@ -42,22 +45,7 @@ namespace First
 
         List<EventDto> GetDtos()
         {
-            var dtos = new List<EventDto>()
-            {
-                new EventDto()
-                {
-                    City = "Пермь",
-                    CityType = "город",
-                    Country = "Россия",
-                    EventComment = "кауккупуеип",
-                    EventInfo = "рикпркил",
-                    EventName = "Полет",
-                    Execution = new DateTime(2017, 2, 22),
-                    House = "37",
-                    Region = "Пермский край",
-                    Street = "Студенческая"
-                }
-            };
+            var dtos = DataBaseHelper.GetDtos().ToList();
 
             Console.WriteLine("dtos are received from db");
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using Domain;
+using Infrastructure;
 using SocketHelper;
 
 namespace Second
@@ -20,14 +21,11 @@ namespace Second
         
         public void Start()
         {
-
-
-
             CreateRsa();
 
             var dtos = WaitData();
             Console.WriteLine(dtos[0].City);
-            SaveData();
+            SaveData(dtos);
         }
 
         void CreateRsa()
@@ -69,9 +67,9 @@ namespace Second
             return data;
         }
 
-        void SaveData()
+        void SaveData(List<EventDto> dtos)
         {
-
+            new Parser().Start(dtos);
         }
 
         T FromByteArray<T>(byte[] data)
